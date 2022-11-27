@@ -5,43 +5,42 @@ name: Python application
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
   pull_request:
-    branches: [ "main" ]
+    branches: ['main']
 
 permissions:
   contents: read
 
 jobs:
   build:
-
     #configurando o container que será utilizado
     runs-on: ubuntu-latest
 
     steps:
-    # baixando o código do container
-    - uses: actions/checkout@v3
-    # instalando a versão python
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.10"
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
-    # Lint => pluggin wemake-python-styleguide
-    - name: wemake-python-styleguide
-      uses: wemake-services/wemake-python-styleguide@0.17.0
-      # configuração mesmo tendo falhas de lint dar andamento aos testes.
-      continue-on-error: true
-      with:
-        path: 'src'
-        # configuração para comentar falhas de lint no pull-request
-        reporter: 'github-pr-review'
-      # acessando token para poder incluir comentario de falaha no pull-request
-      env:
-        GITHUB_TOKEN: ${{ secrets.LINT_TOKEN }}
-    # fazendo os testes
-    - name: Test with pytest
-      run: |
-        pytest
+      # baixando o código do container
+      - uses: actions/checkout@v3
+      # instalando a versão python
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      # Lint => pluggin wemake-python-styleguide
+      - name: wemake-python-styleguide
+        uses: wemake-services/wemake-python-styleguide@0.17.0
+        # configuração mesmo tendo falhas de lint dar andamento aos testes.
+        continue-on-error: true
+        with:
+          path: 'src'
+          # configuração para comentar falhas de lint no pull-request
+          reporter: 'github-pr-review'
+        # acessando token para poder incluir comentario de falaha no pull-request
+        env:
+          GITHUB_TOKEN: ${{ secrets.LINT_TOKEN }}
+      # fazendo os testes
+      - name: Test with pytest
+        run: |
+          pytest
