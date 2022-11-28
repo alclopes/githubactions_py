@@ -4,7 +4,7 @@
 name: Python application
 
 on:
-  pull_request:
+  push:
     branches: ['main']
 
 jobs:
@@ -26,16 +26,22 @@ jobs:
       # Lint => pluggin wemake-python-styleguide
       - name: wemake-python-styleguide
         uses: wemake-services/wemake-python-styleguide@0.17.0
-        # configuração mesmo tendo falhas de lint dar andamento aos testes.
-        continue-on-error: true
         with:
           path: 'src'
-          # configuração para comentar falhas de lint no pull-request
-          reporter: 'github-pr-review'
-        # acessando token para poder incluir comentario de falaha no pull-request
-        env:
-          GITHUB_TOKEN: ${{ secrets.LINT_TOKEN }}
       # fazendo os testes
       - name: Test with pytest
         run: |
           pytest
+
+  deploy:
+    #configurando o container que será utilizado
+    runs-on: ubuntu-latest
+    # configurando para rodar somente apos o step:build finalizar
+    needs: build
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@3.6.8
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
