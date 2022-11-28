@@ -6,4 +6,4 @@ def test_home():
 
 
 def test_status():
-    assert status() == 'ok'
+    assert status() == 'Ok'
