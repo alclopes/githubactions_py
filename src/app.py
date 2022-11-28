@@ -2,15 +2,14 @@ from flask import Flask
 
 app = Flask(__name__)
 
-
 @app.route('/')
 def home():
     return 'Hello'
 
 
-@app.route('/Ok')
+@app.route('/status')
 def status():
-    return 'ok'
+    return 'Ok'
 
 
 if __name__ == '__main__':
